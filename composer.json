@@ -16,12 +16,6 @@
       "email": "opensource@casilhero.com"
     }
   ],
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../brazilian-validators"
-    }
-  ],
   "require": {
     "php": "^8.1",
     "casilhero/brazilian-validators": "^1.0",

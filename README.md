@@ -66,17 +66,17 @@ class UpdateCustomerRequest extends FormRequest
 
 ## Rules disponíveis
 
-| Campo | Rule |
-|---|---|
-| CPF | `Rules\\Cpf` |
-| CNPJ | `Rules\\Cnpj` |
-| CPF/CNPJ | `Rules\\CpfCnpj` |
-| SUFRAMA | `Rules\\Suframa` |
-| NIS/PIS | `Rules\\NisPis` |
-| Telefone BR | `Rules\\Phone` |
+| Campo               | Rule              |
+| ------------------- | ----------------- |
+| CPF                 | `Rules\\Cpf`      |
+| CNPJ                | `Rules\\Cnpj`     |
+| CPF/CNPJ            | `Rules\\CpfCnpj`  |
+| SUFRAMA             | `Rules\\Suframa`  |
+| NIS/PIS             | `Rules\\NisPis`   |
+| Telefone BR         | `Rules\\Phone`    |
 | Telefone BR com DDI | `Rules\\PhoneDdi` |
-| CNH | `Rules\\Cnh` |
-| CNS | `Rules\\Cns` |
+| CNH                 | `Rules\\Cnh`      |
+| CNS                 | `Rules\\Cns`      |
 
 As mensagens seguem o namespace do pacote:
 
@@ -126,22 +126,22 @@ Arquivos publicados em:
 
 ## Compatibilidade
 
-| Componente | Versão suportada |
-|---|---|
-| PHP | `^8.1` (inclui 8.5) |
-| Laravel | `^12.0 \|\| ^13.0` |
+| Componente   | Versão suportada                      |
+| ------------ | ------------------------------------- |
+| PHP          | `^8.1` (inclui 8.5)                   |
+| Laravel      | `^12.0 \|\| ^13.0`                    |
 | Core package | `casilhero/brazilian-validators:^1.0` |
 
 ## Compatibilidade com regras legadas
 
-| Regra legada | Rule no pacote | Status |
-|---|---|---|
-| `App\\Rules\\Cpf` | `Rules\\Cpf` | Comportamento equivalente |
-| `App\\Rules\\Cnpj` | `Rules\\Cnpj` | Comportamento equivalente |
-| `App\\Rules\\CpfCnpj` | `Rules\\CpfCnpj` | Comportamento equivalente |
-| `App\\Rules\\Nis` | `Rules\\NisPis` | Comportamento equivalente |
-| `App\\Rules\\Suframa` | `Rules\\Suframa` | Equivalente, com regra explícita de prefixo `00` inválido |
-| `my_validation.*` | `brazilian-validators::validation.*` | Legado não suportado por design |
+| Regra legada          | Rule no pacote                       | Status                                                    |
+| --------------------- | ------------------------------------ | --------------------------------------------------------- |
+| `App\\Rules\\Cpf`     | `Rules\\Cpf`                         | Comportamento equivalente                                 |
+| `App\\Rules\\Cnpj`    | `Rules\\Cnpj`                        | Comportamento equivalente                                 |
+| `App\\Rules\\CpfCnpj` | `Rules\\CpfCnpj`                     | Comportamento equivalente                                 |
+| `App\\Rules\\Nis`     | `Rules\\NisPis`                      | Comportamento equivalente                                 |
+| `App\\Rules\\Suframa` | `Rules\\Suframa`                     | Equivalente, com regra explícita de prefixo `00` inválido |
+| `my_validation.*`     | `brazilian-validators::validation.*` | Legado não suportado por design                           |
 
 ## Qualidade e testes
 
