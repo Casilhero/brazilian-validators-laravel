@@ -11,7 +11,7 @@ it('loads english translation messages', function (): void {
 
     $validator = Validator::make(
         ['cnpj' => '04252011000111'],
-        ['cnpj' => [new Cnpj()]]
+        ['cnpj' => [new Cnpj]]
     );
 
     expect($validator->fails())->toBeTrue();
@@ -23,7 +23,7 @@ it('loads portuguese translation messages', function (): void {
 
     $validator = Validator::make(
         ['cnpj' => '04252011000111'],
-        ['cnpj' => [new Cnpj()]]
+        ['cnpj' => [new Cnpj]]
     );
 
     expect($validator->fails())->toBeTrue();
@@ -32,11 +32,11 @@ it('loads portuguese translation messages', function (): void {
 
 it('allows application translation override', function (): void {
     app()->setLocale('en');
-    app('translator')->addNamespace('brazilian-validators', __DIR__ . '/../Fixtures/lang');
+    app('translator')->addNamespace('brazilian-validators', __DIR__.'/../Fixtures/lang');
 
     $validator = Validator::make(
         ['cnpj' => '04252011000111'],
-        ['cnpj' => [new Cnpj()]]
+        ['cnpj' => [new Cnpj]]
     );
 
     expect($validator->fails())->toBeTrue();
@@ -48,7 +48,7 @@ it('resolves suframa message from package namespace for invalid 00 prefix', func
 
     $validator = Validator::make(
         ['suframa' => '001234567'],
-        ['suframa' => [new Suframa()]]
+        ['suframa' => [new Suframa]]
     );
 
     expect($validator->fails())->toBeTrue();

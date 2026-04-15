@@ -11,12 +11,12 @@ final class BrazilianValidatorsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton('brazilian-validator', static fn (): BrazilianValidatorManager => new BrazilianValidatorManager());
+        $this->app->singleton('brazilian-validator', static fn (): BrazilianValidatorManager => new BrazilianValidatorManager);
     }
 
     public function boot(): void
     {
-        $langPath = __DIR__ . '/../resources/lang';
+        $langPath = __DIR__.'/../resources/lang';
 
         $this->loadTranslationsFrom($langPath, 'brazilian-validators');
 

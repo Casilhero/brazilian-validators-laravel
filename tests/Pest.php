@@ -1,3 +1,5 @@
 <?php
 
-uses(Casilhero\BrazilianValidatorsLaravel\Tests\TestCase::class)->in('Feature');
+use Casilhero\BrazilianValidatorsLaravel\Tests\TestCase;
+
+uses(TestCase::class)->in('Feature');

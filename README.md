@@ -1,29 +1,29 @@
 # Brazilian Validators Laravel Bridge
 
-Integracao oficial para Laravel do pacote `casilhero/brazilian-validators`, com Rules prontas para `FormRequest`, mensagens traduziveis e suporte a personalizacao de idioma por projeto.
+Integração oficial para Laravel do pacote `casilhero/brazilian-validators`, com Rules prontas para `FormRequest`, mensagens traduzíveis e suporte a personalização de idioma por projeto.
 
-## Sumario
+## Sumário
 
-- [Visao geral](#visao-geral)
+- [Visão geral](#visão-geral)
 - [Requisitos](#requisitos)
-- [Instalacao](#instalacao)
-- [Uso rapido em FormRequest](#uso-rapido-em-formrequest)
-- [Rules disponiveis](#rules-disponiveis)
+- [Instalação](#instalação)
+- [Uso rápido em FormRequest](#uso-rápido-em-formrequest)
+- [Rules disponíveis](#rules-disponíveis)
 - [Helper via Facade](#helper-via-facade)
-- [Internacionalizacao (i18n)](#internacionalizacao-i18n)
+- [Internacionalização (i18n)](#internacionalização-i18n)
 - [Compatibilidade](#compatibilidade)
 - [Compatibilidade com regras legadas](#compatibilidade-com-regras-legadas)
 - [Qualidade e testes](#qualidade-e-testes)
-- [Licenca](#licenca)
+- [Licença](#licença)
 
-## Visao geral
+## Visão geral
 
 O pacote `casilhero/brazilian-validators-laravel` fornece uma camada Laravel sobre o core:
 
 - Rules por classe (`new Cnpj()`, `new Cpf()`, etc.)
-- Integracao com sistema de traducao do Laravel
-- Publicacao de arquivos de idioma para customizacao local
-- Facade para uso programatico fora da camada de Request
+- Integração com sistema de tradução do Laravel
+- Publicação de arquivos de idioma para customização local
+- Facade para uso programático fora da camada de Request
 
 ## Requisitos
 
@@ -31,13 +31,13 @@ O pacote `casilhero/brazilian-validators-laravel` fornece uma camada Laravel sob
 - Laravel `^12.0 || ^13.0`
 - `casilhero/brazilian-validators` `^1.0`
 
-## Instalacao
+## Instalação
 
 ```bash
 composer require casilhero/brazilian-validators-laravel
 ```
 
-## Uso rapido em FormRequest
+## Uso rápido em FormRequest
 
 ```php
 <?php
@@ -64,7 +64,7 @@ class UpdateCustomerRequest extends FormRequest
 }
 ```
 
-## Rules disponiveis
+## Rules disponíveis
 
 | Campo | Rule |
 |---|---|
@@ -93,16 +93,23 @@ use Casilhero\BrazilianValidatorsLaravel\Facades\BrazilianValidator;
 
 $okCnpj = BrazilianValidator::cnpj('04.252.011/0001-10');
 $okPhone = BrazilianValidator::phone('(11) 98765-4321');
+
+// Retorno detalhado com código de erro
+$result = BrazilianValidator::cpfResult('11111111111');
+
+if (! $result->isValid()) {
+    echo $result->code(); // invalid_format
+}
 ```
 
-## Internacionalizacao (i18n)
+## Internacionalização (i18n)
 
 Idiomas embarcados no pacote:
 
 - `pt_BR`
 - `en`
 
-Publicar traducoes para customizar no projeto:
+Publicar traduções para customizar no projeto:
 
 ```bash
 php artisan vendor:publish --tag=brazilian-validators-translations
@@ -114,15 +121,15 @@ Arquivos publicados em:
 
 ### Importante
 
-- Nao ha fallback para chaves legadas `my_validation.*`.
-- O contrato oficial e `brazilian-validators::validation.*`.
+- Não há fallback para chaves legadas `my_validation.*`.
+- O contrato oficial é `brazilian-validators::validation.*`.
 
 ## Compatibilidade
 
-| Componente | Versao suportada |
+| Componente | Versão suportada |
 |---|---|
-| PHP | `^8.1` |
-| Laravel | `^12.0 || ^13.0` |
+| PHP | `^8.1` (inclui 8.5) |
+| Laravel | `^12.0 \|\| ^13.0` |
 | Core package | `casilhero/brazilian-validators:^1.0` |
 
 ## Compatibilidade com regras legadas
@@ -133,8 +140,8 @@ Arquivos publicados em:
 | `App\\Rules\\Cnpj` | `Rules\\Cnpj` | Comportamento equivalente |
 | `App\\Rules\\CpfCnpj` | `Rules\\CpfCnpj` | Comportamento equivalente |
 | `App\\Rules\\Nis` | `Rules\\NisPis` | Comportamento equivalente |
-| `App\\Rules\\Suframa` | `Rules\\Suframa` | Equivalente, com regra explicita de prefixo `00` invalido |
-| `my_validation.*` | `brazilian-validators::validation.*` | Legado nao suportado por design |
+| `App\\Rules\\Suframa` | `Rules\\Suframa` | Equivalente, com regra explícita de prefixo `00` inválido |
+| `my_validation.*` | `brazilian-validators::validation.*` | Legado não suportado por design |
 
 ## Qualidade e testes
 
@@ -146,9 +153,9 @@ composer test
 
 CI do pacote:
 
-- Matriz de execucao para Laravel 12 e Laravel 13.
-- Validacao de integracao das Rules e traducoes.
+- Matriz de execução para Laravel 12 e Laravel 13.
+- Validação de integração das Rules e traduções.
 
-## Licenca
+## Licença
 
 MIT
