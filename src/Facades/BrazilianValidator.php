@@ -26,6 +26,14 @@ use Illuminate\Support\Facades\Facade;
  * @method static ValidationResult cnhResult(string $value)
  * @method static bool cns(string $value)
  * @method static ValidationResult cnsResult(string $value)
+ * @method static bool renavam(string $value)
+ * @method static ValidationResult renavamResult(string $value)
+ * @method static bool tituloEleitor(string $value)
+ * @method static ValidationResult tituloEleitorResult(string $value)
+ * @method static bool chassi(string $value)
+ * @method static ValidationResult chassiResult(string $value)
+ * @method static bool inscricaoEstadual(string $value, string|\Casilhero\BrazilianValidators\Support\Uf $uf)
+ * @method static ValidationResult inscricaoEstadualResult(string $value, string|\Casilhero\BrazilianValidators\Support\Uf $uf)
  */
 final class BrazilianValidator extends Facade
 {

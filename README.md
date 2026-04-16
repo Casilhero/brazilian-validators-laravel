@@ -1,35 +1,11 @@
-# Brazilian Validators Laravel Bridge
+﻿# casilhero/brazilian-validators-laravel
 
-Integração oficial para Laravel do pacote `casilhero/brazilian-validators`, com Rules prontas para `FormRequest`, mensagens traduzíveis e suporte a personalização de idioma por projeto.
-
-## Sumário
-
-- [Visão geral](#visão-geral)
-- [Requisitos](#requisitos)
-- [Instalação](#instalação)
-- [Uso rápido em FormRequest](#uso-rápido-em-formrequest)
-- [Rules disponíveis](#rules-disponíveis)
-- [Helper via Facade](#helper-via-facade)
-- [Internacionalização (i18n)](#internacionalização-i18n)
-- [Compatibilidade](#compatibilidade)
-- [Compatibilidade com regras legadas](#compatibilidade-com-regras-legadas)
-- [Qualidade e testes](#qualidade-e-testes)
-- [Licença](#licença)
-
-## Visão geral
-
-O pacote `casilhero/brazilian-validators-laravel` fornece uma camada Laravel sobre o core:
-
-- Rules por classe (`new Cnpj()`, `new Cpf()`, etc.)
-- Integração com sistema de tradução do Laravel
-- Publicação de arquivos de idioma para customização local
-- Facade para uso programático fora da camada de Request
+Integração oficial com Laravel do pacote [casilhero/brazilian-validators](https://github.com/Casilhero/brazilian-validators). Fornece Rules prontas para `FormRequest`, mensagens de validação traduzíveis e uma Facade para uso programático.
 
 ## Requisitos
 
 - PHP `^8.1`
 - Laravel `^12.0 || ^13.0`
-- `casilhero/brazilian-validators` `^1.0`
 
 ## Instalação
 
@@ -37,124 +13,145 @@ O pacote `casilhero/brazilian-validators-laravel` fornece uma camada Laravel sob
 composer require casilhero/brazilian-validators-laravel
 ```
 
-## Uso rápido em FormRequest
+O Service Provider é registrado automaticamente via auto-discovery.
+
+## Rules
+
+Use as Rules diretamente no array `rules()` de um `FormRequest`:
 
 ```php
-<?php
-
-namespace App\Http\Requests;
-
 use Casilhero\BrazilianValidatorsLaravel\Rules\Cnpj;
+use Casilhero\BrazilianValidatorsLaravel\Rules\Cpf;
+use Casilhero\BrazilianValidatorsLaravel\Rules\InscricaoEstadual;
+use Casilhero\BrazilianValidatorsLaravel\Rules\ProcessoJudicial;
+use Casilhero\BrazilianValidatorsLaravel\Rules\Renavam;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateCustomerRequest extends FormRequest
+class StoreCustomerRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
-            'cnpj' => ['required', 'string', new Cnpj(), Rule::unique('customers', 'cnpj')],
+            'cpf'                 => ['required', 'string', new Cpf()],
+            'cnpj'                => ['required', 'string', new Cnpj()],
+            'renavam'             => ['required', 'string', new Renavam()],
+            'inscricao_estadual'  => ['required', 'string', new InscricaoEstadual('SP')],
+            'processo_judicial'   => ['required', 'string', new ProcessoJudicial()],
         ];
     }
 }
 ```
 
-## Rules disponíveis
+### Rules disponíveis
 
-| Campo               | Rule              |
-| ------------------- | ----------------- |
-| CPF                 | `Rules\\Cpf`      |
-| CNPJ                | `Rules\\Cnpj`     |
-| CPF/CNPJ            | `Rules\\CpfCnpj`  |
-| SUFRAMA             | `Rules\\Suframa`  |
-| NIS/PIS             | `Rules\\NisPis`   |
-| Telefone BR         | `Rules\\Phone`    |
-| Telefone BR com DDI | `Rules\\PhoneDdi` |
-| CNH                 | `Rules\\Cnh`      |
-| CNS                 | `Rules\\Cns`      |
+| Campo               | Classe                    | Observação                                      |
+| ------------------- | ------------------------- | ----------------------------------------------- |
+| CPF                 | `Rules\Cpf`               |                                                 |
+| CNPJ                | `Rules\Cnpj`              |                                                 |
+| CPF ou CNPJ         | `Rules\CpfCnpj`           |                                                 |
+| SUFRAMA             | `Rules\Suframa`           |                                                 |
+| NIS/PIS             | `Rules\NisPis`            |                                                 |
+| Telefone BR         | `Rules\Phone`             |                                                 |
+| Telefone BR com DDI | `Rules\PhoneDdi`          |                                                 |
+| CNH                 | `Rules\Cnh`               |                                                 |
+| CNS                 | `Rules\Cns`               |                                                 |
+| RENAVAM             | `Rules\Renavam`           |                                                 |
+| Título de Eleitor   | `Rules\TituloEleitor`     |                                                 |
+| Chassi (VIN)        | `Rules\Chassi`            |                                                 |
+| Inscrição Estadual  | `Rules\InscricaoEstadual` | Recebe `string $uf` no construtor (ex.: `'SP'`) |
+| Certidão            | `Rules\Certidao`          | Aceita formato com ou sem espaços/hífens        |
+| Passaporte          | `Rules\Passaporte`        | 2 letras + 6 dígitos (ex.: `AB123456`)          |
+| CAEPF               | `Rules\Caepf`             |                                                 |
+| Processo Judicial   | `Rules\ProcessoJudicial`  | Formato CNJ: `NNNNNNN-DD.AAAA.J.TR.OOOO`        |
 
-As mensagens seguem o namespace do pacote:
+## Facade
 
-- `brazilian-validators::validation.<regra>`
-
-## Helper via Facade
-
-Exemplo de uso fora do array de rules:
+A Facade `BrazilianValidator` é útil fora do contexto de Request, como em serviços, jobs ou artisan commands:
 
 ```php
-<?php
-
 use Casilhero\BrazilianValidatorsLaravel\Facades\BrazilianValidator;
 
-$okCnpj = BrazilianValidator::cnpj('04.252.011/0001-10');
-$okPhone = BrazilianValidator::phone('(11) 98765-4321');
+// Retorno bool
+BrazilianValidator::cpf('529.982.247-25');
+BrazilianValidator::cnpj('04.252.011/0001-10');
+BrazilianValidator::phone('(11) 98765-4321');
+BrazilianValidator::renavam('77077411168');
+BrazilianValidator::chassi('9BWZZZ377VT004251');
+BrazilianValidator::tituloEleitor('123456789012');
+BrazilianValidator::inscricaoEstadual('110042490114', 'SP');
+BrazilianValidator::certidao('10514 01 55 2024 1 00001 092 0000250-28');
+BrazilianValidator::passaporte('AB123456');
+BrazilianValidator::caepf('132.574.492/00-1');
+BrazilianValidator::processoJudicial('0000001-41.2024.8.01.0001');
 
-// Retorno detalhado com código de erro
-$result = BrazilianValidator::cpfResult('11111111111');
+// Retorno ValidationResult (sufixo Result)
+$result = BrazilianValidator::cnpjResult('11.111.111/1111-11');
 
 if (! $result->isValid()) {
-    echo $result->code(); // invalid_format
+    echo $result->code(); // ex: invalid_checksum
 }
+
+// Geração de dados de teste
+$cpf    = BrazilianValidator::generateCpf();
+$cnpj   = BrazilianValidator::generateCnpj();
+$phone  = BrazilianValidator::generatePhone();
+$cnh    = BrazilianValidator::generateCnh();
+$proc   = BrazilianValidator::generateProcessoJudicial();
+// demais: generateCpfCnpj, generateSuframa, generateNisPis, generatePhoneDdi,
+//         generateCns, generateRenavam, generateChassi, generateTituloEleitor,
+//         generateCertidao, generatePassaporte, generateCaepf
+
+// Aplicação de máscara
+$maskedCpf  = BrazilianValidator::maskCpf('52998224725');     // '529.982.247-25'
+$maskedCnpj = BrazilianValidator::maskCnpj('04252011000110'); // '04.252.011/0001-10'
+$maskedProc = BrazilianValidator::maskProcessoJudicial('00000014120248010001');
+//   '0000001-41.2024.8.01.0001'
+// demais: maskCpfCnpj, maskSuframa, maskNisPis, maskPhone, maskPhoneDdi, maskCnh,
+//         maskRenavam, maskChassi, maskTituloEleitor, maskCertidao,
+//         maskPassaporte, maskCaepf
+
+// Parse de certidão (extrai campos estruturados)
+$parsed = BrazilianValidator::certidaoParse('10514 01 55 2024 1 00001 092 0000250-28');
+// ['matricula'=>'0000250', 'dv'=>'28', 'acervo'=>'00001', ...]
 ```
 
-## Internacionalização (i18n)
+Métodos `bool` disponíveis: `cpf`, `cnpj`, `cpfCnpj`, `suframa`, `nisPis`, `phone`, `phoneDdi`, `cnh`, `cns`, `renavam`, `chassi`, `tituloEleitor`, `inscricaoEstadual`, `certidao`, `passaporte`, `caepf`, `processoJudicial` — e suas variantes `*Result()` que retornam `ValidationResult`.
 
-Idiomas embarcados no pacote:
+> `inscricaoEstadual` e `inscricaoEstadualResult` recebem um segundo argumento `string $uf` (ex.: `'SP'`, `'RJ'`).
 
-- `pt_BR`
-- `en`
+## Mensagens de validação
 
-Publicar traduções para customizar no projeto:
+Os idiomas `pt_BR` e `en` estão inclusos no pacote. As mensagens seguem o namespace `brazilian-validators::validation.<regra>`.
+
+Para customizar as mensagens no seu projeto, publique os arquivos de idioma:
 
 ```bash
 php artisan vendor:publish --tag=brazilian-validators-translations
 ```
 
-Arquivos publicados em:
+Os arquivos serão publicados em:
 
-- `lang/vendor/brazilian-validators/{locale}/validation.php`
-
-### Importante
-
-- Não há fallback para chaves legadas `my_validation.*`.
-- O contrato oficial é `brazilian-validators::validation.*`.
+```
+lang/vendor/brazilian-validators/{locale}/validation.php
+```
 
 ## Compatibilidade
 
 | Componente   | Versão suportada                      |
 | ------------ | ------------------------------------- |
-| PHP          | `^8.1` (inclui 8.5)                   |
+| PHP          | `^8.1` (inclui 8.2, 8.3, 8.4 e 8.5)   |
 | Laravel      | `^12.0 \|\| ^13.0`                    |
-| Core package | `casilhero/brazilian-validators:^1.0` |
+| Core package | `casilhero/brazilian-validators ^1.0` |
 
-## Compatibilidade com regras legadas
-
-| Regra legada          | Rule no pacote                       | Status                                                    |
-| --------------------- | ------------------------------------ | --------------------------------------------------------- |
-| `App\\Rules\\Cpf`     | `Rules\\Cpf`                         | Comportamento equivalente                                 |
-| `App\\Rules\\Cnpj`    | `Rules\\Cnpj`                        | Comportamento equivalente                                 |
-| `App\\Rules\\CpfCnpj` | `Rules\\CpfCnpj`                     | Comportamento equivalente                                 |
-| `App\\Rules\\Nis`     | `Rules\\NisPis`                      | Comportamento equivalente                                 |
-| `App\\Rules\\Suframa` | `Rules\\Suframa`                     | Equivalente, com regra explícita de prefixo `00` inválido |
-| `my_validation.*`     | `brazilian-validators::validation.*` | Legado não suportado por design                           |
-
-## Qualidade e testes
-
-Comando local:
+## Testes
 
 ```bash
-composer test
+composer test          # executa a suíte Pest
+composer format        # aplica Laravel Pint
+composer format:check  # verifica formatação sem alterar arquivos
 ```
 
-CI do pacote:
-
-- Matriz de execução para Laravel 12 e Laravel 13.
-- Validação de integração das Rules e traduções.
+A CI valida o pacote em matriz com Laravel 12 e 13.
 
 ## Licença
 

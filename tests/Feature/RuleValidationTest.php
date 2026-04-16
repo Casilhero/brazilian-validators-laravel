@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Casilhero\BrazilianValidatorsLaravel\Rules\Cnh;
+use Casilhero\BrazilianValidatorsLaravel\Rules\Chassi;
+use Casilhero\BrazilianValidatorsLaravel\Rules\InscricaoEstadual;
 use Casilhero\BrazilianValidatorsLaravel\Rules\Cnpj;
 use Casilhero\BrazilianValidatorsLaravel\Rules\Cns;
 use Casilhero\BrazilianValidatorsLaravel\Rules\Cpf;
@@ -10,7 +12,10 @@ use Casilhero\BrazilianValidatorsLaravel\Rules\CpfCnpj;
 use Casilhero\BrazilianValidatorsLaravel\Rules\NisPis;
 use Casilhero\BrazilianValidatorsLaravel\Rules\Phone;
 use Casilhero\BrazilianValidatorsLaravel\Rules\PhoneDdi;
+use Casilhero\BrazilianValidatorsLaravel\Rules\Renavam;
+use Casilhero\BrazilianValidatorsLaravel\Rules\ProcessoJudicial;
 use Casilhero\BrazilianValidatorsLaravel\Rules\Suframa;
+use Casilhero\BrazilianValidatorsLaravel\Rules\TituloEleitor;
 use Illuminate\Support\Facades\Validator;
 
 function makeNisPisForBridge(string $base): string
@@ -95,6 +100,73 @@ function makeCnsForBridge(string $base): string
     throw new RuntimeException('Cannot generate valid CNS for tests.');
 }
 
+function makeRenavamForBridge(string $base): string
+{
+    $weights = [3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    $sum = 0;
+
+    for ($i = 0; $i < 10; $i++) {
+        $sum += (int) $base[$i] * $weights[$i];
+    }
+
+    $digit = ($sum * 10) % 11;
+
+    if ($digit === 10) {
+        $digit = 0;
+    }
+
+    return $base.(string) $digit;
+}
+
+function makeTituloEleitorForBridge(string $base): string
+{
+    $sumA = 0;
+
+    for ($i = 0; $i < 8; $i++) {
+        $sumA += (int) $base[$i] * ($i + 2);
+    }
+
+    $mod = $sumA % 11;
+    $dv1 = ($mod === 10 || $mod === 11) ? 0 : $mod;
+
+    $sumB = (int) $base[8] * 7 + (int) $base[9] * 8 + $dv1 * 9;
+
+    $mod = $sumB % 11;
+    $dv2 = ($mod === 10 || $mod === 11) ? 0 : $mod;
+
+    return $base.(string) $dv1.(string) $dv2;
+}
+
+function makeChassiForBridge(string $base16): string
+{
+    $charValues = [
+        'A' => 1, 'J' => 1,
+        'B' => 2, 'K' => 2, 'S' => 2,
+        'C' => 3, 'L' => 3, 'T' => 3,
+        'D' => 4, 'M' => 4, 'U' => 4,
+        'E' => 5, 'N' => 5, 'V' => 5,
+        'F' => 6, 'W' => 6,
+        'G' => 7, 'P' => 7, 'X' => 7,
+        'H' => 8, 'Y' => 8,
+        'R' => 9, 'Z' => 9,
+    ];
+
+    $weights = [8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2];
+    $vin = strtoupper(substr($base16, 0, 8).'0'.substr($base16, 8, 8));
+    $sum = 0;
+
+    for ($i = 0; $i < 17; $i++) {
+        $char = $vin[$i];
+        $charValue = is_numeric($char) ? (int) $char : ($charValues[$char] ?? 0);
+        $sum += $charValue * $weights[$i];
+    }
+
+    $mod = $sum % 11;
+    $checkDigit = $mod === 10 ? 'X' : (string) $mod;
+
+    return substr($vin, 0, 8).$checkDigit.substr($vin, 9, 8);
+}
+
 it('validates all package rule classes', function (string $field, object $rule, string $valid, string $invalid): void {
     $validResult = Validator::make([$field => $valid], [$field => [$rule]]);
     $invalidResult = Validator::make([$field => $invalid], [$field => [$rule]]);
@@ -111,4 +183,9 @@ it('validates all package rule classes', function (string $field, object $rule, 
     ['phone_ddi', new PhoneDdi, '+55 (11) 98765-4321', '5511876543210'],
     ['cnh', new Cnh, makeCnhForBridge('123456789'), '12345678901'],
     ['cns', new Cns, makeCnsForBridge('71234567890123'), '712345678901234'],
+    ['renavam', new Renavam, makeRenavamForBridge('1234567890'), '12345678901'],
+    ['titulo_eleitor', new TituloEleitor, makeTituloEleitorForBridge('1234567801'), '123456789100'],
+    ['chassi', new Chassi, makeChassiForBridge('1HGCM8263A004352'), '1HGCM82639A004352'],
+    ['inscricao_estadual', new InscricaoEstadual('SP'), '110042490114', '110042490115'],
+    ['processo_judicial', new ProcessoJudicial, '00000014120248010001', '1234'],
 ]);
