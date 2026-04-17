@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Casilhero\BrazilianValidatorsLaravel\Facades;
 
+use Casilhero\BrazilianValidators\Support\BoletoInfo;
 use Casilhero\BrazilianValidators\Support\ValidationResult;
 use Illuminate\Support\Facades\Facade;
 
@@ -34,6 +35,11 @@ use Illuminate\Support\Facades\Facade;
  * @method static ValidationResult chassiResult(string $value)
  * @method static bool inscricaoEstadual(string $value, string|\Casilhero\BrazilianValidators\Support\Uf $uf)
  * @method static ValidationResult inscricaoEstadualResult(string $value, string|\Casilhero\BrazilianValidators\Support\Uf $uf)
+ * @method static bool boleto(string $value)
+ * @method static ValidationResult boletoResult(string $value)
+ * @method static BoletoInfo|null boletoParse(string $value)
+ * @method static string boletoGenerate()
+ * @method static string boletoMask(string $value)
  */
 final class BrazilianValidator extends Facade
 {

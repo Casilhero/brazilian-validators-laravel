@@ -44,25 +44,26 @@ class StoreCustomerRequest extends FormRequest
 
 ### Rules disponíveis
 
-| Campo               | Classe                    | Observação                                      |
-| ------------------- | ------------------------- | ----------------------------------------------- |
-| CPF                 | `Rules\Cpf`               |                                                 |
-| CNPJ                | `Rules\Cnpj`              |                                                 |
-| CPF ou CNPJ         | `Rules\CpfCnpj`           |                                                 |
-| SUFRAMA             | `Rules\Suframa`           |                                                 |
-| NIS/PIS             | `Rules\NisPis`            |                                                 |
-| Telefone BR         | `Rules\Phone`             |                                                 |
-| Telefone BR com DDI | `Rules\PhoneDdi`          |                                                 |
-| CNH                 | `Rules\Cnh`               |                                                 |
-| CNS                 | `Rules\Cns`               |                                                 |
-| RENAVAM             | `Rules\Renavam`           |                                                 |
-| Título de Eleitor   | `Rules\TituloEleitor`     |                                                 |
-| Chassi (VIN)        | `Rules\Chassi`            |                                                 |
-| Inscrição Estadual  | `Rules\InscricaoEstadual` | Recebe `string $uf` no construtor (ex.: `'SP'`) |
-| Certidão            | `Rules\Certidao`          | Aceita formato com ou sem espaços/hífens        |
-| Passaporte          | `Rules\Passaporte`        | 2 letras + 6 dígitos (ex.: `AB123456`)          |
-| CAEPF               | `Rules\Caepf`             |                                                 |
-| Processo Judicial   | `Rules\ProcessoJudicial`  | Formato CNJ: `NNNNNNN-DD.AAAA.J.TR.OOOO`        |
+| Campo               | Classe                    | Observação                                              |
+| ------------------- | ------------------------- | ------------------------------------------------------- |
+| CPF                 | `Rules\Cpf`               |                                                         |
+| CNPJ                | `Rules\Cnpj`              |                                                         |
+| CPF ou CNPJ         | `Rules\CpfCnpj`           |                                                         |
+| SUFRAMA             | `Rules\Suframa`           |                                                         |
+| NIS/PIS             | `Rules\NisPis`            |                                                         |
+| Telefone BR         | `Rules\Phone`             |                                                         |
+| Telefone BR com DDI | `Rules\PhoneDdi`          |                                                         |
+| CNH                 | `Rules\Cnh`               |                                                         |
+| CNS                 | `Rules\Cns`               |                                                         |
+| RENAVAM             | `Rules\Renavam`           |                                                         |
+| Título de Eleitor   | `Rules\TituloEleitor`     |                                                         |
+| Chassi (VIN)        | `Rules\Chassi`            |                                                         |
+| Inscrição Estadual  | `Rules\InscricaoEstadual` | Recebe `string $uf` no construtor (ex.: `'SP'`)         |
+| Certidão            | `Rules\Certidao`          | Aceita formato com ou sem espaços/hífens                |
+| Passaporte          | `Rules\Passaporte`        | 2 letras + 6 dígitos (ex.: `AB123456`)                  |
+| CAEPF               | `Rules\Caepf`             |                                                         |
+| Processo Judicial   | `Rules\ProcessoJudicial`  | Formato CNJ: `NNNNNNN-DD.AAAA.J.TR.OOOO`                |
+| Boleto              | `Rules\Boleto`            | Aceita bancário (47 dígitos) e arrecadação (48 dígitos) |
 
 ## Facade
 
@@ -83,6 +84,7 @@ BrazilianValidator::certidao('10514 01 55 2024 1 00001 092 0000250-28');
 BrazilianValidator::passaporte('AB123456');
 BrazilianValidator::caepf('132.574.492/00-1');
 BrazilianValidator::processoJudicial('0000001-41.2024.8.01.0001');
+BrazilianValidator::boleto('34191.79001 01043.510047 91020.150008 2 85480000000000');
 
 // Retorno ValidationResult (sufixo Result)
 $result = BrazilianValidator::cnpjResult('11.111.111/1111-11');
@@ -92,30 +94,41 @@ if (! $result->isValid()) {
 }
 
 // Geração de dados de teste
-$cpf    = BrazilianValidator::generateCpf();
-$cnpj   = BrazilianValidator::generateCnpj();
-$phone  = BrazilianValidator::generatePhone();
-$cnh    = BrazilianValidator::generateCnh();
-$proc   = BrazilianValidator::generateProcessoJudicial();
-// demais: generateCpfCnpj, generateSuframa, generateNisPis, generatePhoneDdi,
-//         generateCns, generateRenavam, generateChassi, generateTituloEleitor,
-//         generateCertidao, generatePassaporte, generateCaepf
+$cpf    = BrazilianValidator::cpfGenerate();
+$cnpj   = BrazilianValidator::cnpjGenerate();
+$phone  = BrazilianValidator::phoneGenerate();
+$cnh    = BrazilianValidator::cnhGenerate();
+$proc   = BrazilianValidator::processoJudicialGenerate();
+$boleto = BrazilianValidator::boletoGenerate();
+// demais: cpfCnpjGenerate, suframaGenerate, nisPisGenerate, phoneDdiGenerate,
+//         cnsGenerate, renavamGenerate, chassiGenerate, tituloEleitorGenerate,
+//         certidaoGenerate, passaporteGenerate, caepfGenerate
 
 // Aplicação de máscara
-$maskedCpf  = BrazilianValidator::maskCpf('52998224725');     // '529.982.247-25'
-$maskedCnpj = BrazilianValidator::maskCnpj('04252011000110'); // '04.252.011/0001-10'
-$maskedProc = BrazilianValidator::maskProcessoJudicial('00000014120248010001');
+$maskedCpf    = BrazilianValidator::cpfMask('52998224725');    // '529.982.247-25'
+$maskedCnpj   = BrazilianValidator::cnpjMask('04252011000110'); // '04.252.011/0001-10'
+$maskedBoleto = BrazilianValidator::boletoMask('34191790010104351004791020150008285480000000000');
+//   '34191.79001 01043.510047 91020.150008 2 85480000000000'
+$maskedProc   = BrazilianValidator::processoJudicialMask('00000014120248010001');
 //   '0000001-41.2024.8.01.0001'
-// demais: maskCpfCnpj, maskSuframa, maskNisPis, maskPhone, maskPhoneDdi, maskCnh,
-//         maskRenavam, maskChassi, maskTituloEleitor, maskCertidao,
-//         maskPassaporte, maskCaepf
+// demais: cpfCnpjMask, suframaMask, nisPisMask, phoneMask, phoneDdiMask, cnhMask,
+//         renavamMask, chassiMask, tituloEleitorMask, certidaoMask,
+//         passaporteMask, caepfMask
 
-// Parse de certidão (extrai campos estruturados)
-$parsed = BrazilianValidator::certidaoParse('10514 01 55 2024 1 00001 092 0000250-28');
-// ['matricula'=>'0000250', 'dv'=>'28', 'acervo'=>'00001', ...]
+// Parse (extrai campos estruturados)
+$certidaoInfo = BrazilianValidator::certidaoParse('10514 01 55 2024 1 00001 092 0000250-28');
+$certidaoInfo?->codigoServentia;  // '10514'
+$certidaoInfo?->descricaoLivro(); // 'Livro A (Nascimento)'
+
+$boletoInfo = BrazilianValidator::boletoParse('00190000090114971860168524522114675860000102656');
+$boletoInfo?->type;            // 'bancario'
+$boletoInfo?->bankCode;        // '001'
+$boletoInfo?->amount;          // 102656
+$boletoInfo?->amountInReals(); // 1026.56
+$boletoInfo?->expirationDate;  // \DateTimeImmutable
 ```
 
-Métodos `bool` disponíveis: `cpf`, `cnpj`, `cpfCnpj`, `suframa`, `nisPis`, `phone`, `phoneDdi`, `cnh`, `cns`, `renavam`, `chassi`, `tituloEleitor`, `inscricaoEstadual`, `certidao`, `passaporte`, `caepf`, `processoJudicial` — e suas variantes `*Result()` que retornam `ValidationResult`.
+Métodos `bool` disponíveis: `cpf`, `cnpj`, `cpfCnpj`, `suframa`, `nisPis`, `phone`, `phoneDdi`, `cnh`, `cns`, `renavam`, `chassi`, `tituloEleitor`, `inscricaoEstadual`, `certidao`, `passaporte`, `caepf`, `processoJudicial`, `boleto` — e suas variantes `*Result()` que retornam `ValidationResult`.
 
 > `inscricaoEstadual` e `inscricaoEstadualResult` recebem um segundo argumento `string $uf` (ex.: `'SP'`, `'RJ'`).
 

@@ -18,4 +18,5 @@ return [
     'passaporte' => 'The :attribute field must be a valid Brazilian passport.',
     'caepf' => 'The :attribute field must be a valid CAEPF.',
     'processo_judicial' => 'The :attribute field must be a valid judicial process number.',
+    'boleto' => 'The :attribute field must be a valid boleto (bank slip).',
 ];

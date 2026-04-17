@@ -18,4 +18,5 @@ return [
     'passaporte' => 'O campo :attribute deve ser um passaporte brasileiro válido.',
     'caepf' => 'O campo :attribute deve ser um CAEPF válido.',
     'processo_judicial' => 'O campo :attribute deve ser um número de processo judicial válido.',
+    'boleto' => 'O campo :attribute deve ser um boleto bancário ou de arrecadação válido.',
 ];

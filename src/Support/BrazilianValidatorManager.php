@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Casilhero\BrazilianValidatorsLaravel\Support;
 
+use Casilhero\BrazilianValidators\Support\BoletoInfo;
 use Casilhero\BrazilianValidators\Support\ValidationResult;
+use Casilhero\BrazilianValidators\Validators\Boleto;
 use Casilhero\BrazilianValidators\Validators\Caepf;
 use Casilhero\BrazilianValidators\Validators\Chassi;
 use Casilhero\BrazilianValidators\Validators\Cnh;
@@ -201,6 +203,21 @@ final class BrazilianValidatorManager
         return ProcessoJudicial::validate($value);
     }
 
+    public function boleto(string $value): bool
+    {
+        return Boleto::isValid($value);
+    }
+
+    public function boletoResult(string $value): ValidationResult
+    {
+        return Boleto::validate($value);
+    }
+
+    public function boletoParse(string $value): ?BoletoInfo
+    {
+        return Boleto::parse($value);
+    }
+
     // ─── generate ────────────────────────────────────────────────────────────
 
     public function cpfGenerate(): string
@@ -283,6 +300,11 @@ final class BrazilianValidatorManager
         return ProcessoJudicial::generate();
     }
 
+    public function boletoGenerate(): string
+    {
+        return Boleto::generate();
+    }
+
     // ─── mask ────────────────────────────────────────────────────────────────
 
     public function cpfMask(string $value): string
@@ -363,5 +385,10 @@ final class BrazilianValidatorManager
     public function processoJudicialMask(string $value): string
     {
         return ProcessoJudicial::mask($value);
+    }
+
+    public function boletoMask(string $value): string
+    {
+        return Boleto::mask($value);
     }
 }

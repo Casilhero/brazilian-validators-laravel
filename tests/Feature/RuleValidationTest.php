@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Casilhero\BrazilianValidatorsLaravel\Rules\Boleto;
 use Casilhero\BrazilianValidatorsLaravel\Rules\Cnh;
 use Casilhero\BrazilianValidatorsLaravel\Rules\Chassi;
 use Casilhero\BrazilianValidatorsLaravel\Rules\InscricaoEstadual;
@@ -188,4 +189,5 @@ it('validates all package rule classes', function (string $field, object $rule, 
     ['chassi', new Chassi, makeChassiForBridge('1HGCM8263A004352'), '1HGCM82639A004352'],
     ['inscricao_estadual', new InscricaoEstadual('SP'), '110042490114', '110042490115'],
     ['processo_judicial', new ProcessoJudicial, '00000014120248010001', '1234'],
+    ['boleto', new Boleto, \Casilhero\BrazilianValidators\Validators\Boleto::generate(), '12345'],
 ]);
