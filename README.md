@@ -2,6 +2,9 @@
 
 Integração oficial com Laravel do pacote [casilhero/brazilian-validators](https://github.com/Casilhero/brazilian-validators). Fornece Rules prontas para `FormRequest`, mensagens de validação traduzíveis e uma Facade para uso programático.
 
+> Prefere sem dependência de framework? Use o [PHP puro](https://github.com/Casilhero/brazilian-validators).
+> Precisa também no frontend? Veja a versão [JavaScript / TypeScript](https://github.com/Casilhero/brazilian-validators-javascript).
+
 ## Requisitos
 
 - PHP `^8.1`
